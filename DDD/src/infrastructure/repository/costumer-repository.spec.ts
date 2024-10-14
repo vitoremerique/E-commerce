@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import Address from "../../Domain/entity/address";
-import customerModel from "../db/sequelize/model/customer.model";
-import customerRepository from "./customer.repository";
+import CustomerModel from "../db/sequelize/model/customer.model";
+import CustomerRepository from "./customer.repository";
 import Customer from "../../Domain/entity/Costumer";
 
 
@@ -19,7 +19,7 @@ describe("Costumer repository test unit",()=>{
         sync: { force: true },
       });
   
-      await sequelize.addModels([customerModel]);
+      await sequelize.addModels([CustomerModel]);
       await sequelize.sync();
     });
   
@@ -28,13 +28,13 @@ describe("Costumer repository test unit",()=>{
     });
   
     it("should create a customer", async () => {
-      const customerRepo = new customerRepository();
+      const customerRepo = new CustomerRepository();
       const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
       customer.Address = address;
       await customerRepo.create(customer);
   
-      const customerMode = await customerModel.findOne({ where: { id: "123" } });
+      const customerMode = await CustomerModel.findOne({ where: { id: "123" } });
   
       expect(customerMode.toJSON()).toStrictEqual({
         id: "123",
@@ -53,7 +53,7 @@ describe("Costumer repository test unit",()=>{
 
 
     it("should update name customer", async () => {
-        const customerRepo = new customerRepository();
+        const customerRepo = new CustomerRepository();
         const customer = new Customer("123", "Customer 1");
         const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
         customer.Address = address;
@@ -61,7 +61,7 @@ describe("Costumer repository test unit",()=>{
 
         customer.changeName("Vitor Torres Emerique")
         await customerRepo.update(customer)
-        const customerMode = await customerModel.findOne({ where: { id: "123" } });
+        const customerMode = await CustomerModel.findOne({ where: { id: "123" } });
     
         expect(customerMode.toJSON()).toStrictEqual({
           id: "123",
@@ -78,13 +78,13 @@ describe("Costumer repository test unit",()=>{
 
 
       it("should find by id customer", async () => {
-        const CustomerRepository = new customerRepository();
+        const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
     customer.Address = address;
-    await CustomerRepository.create(customer);
+    await customerRepository.create(customer);
 
-    const customerResult = await CustomerRepository.find(customer.id);
+    const customerResult = await customerRepository.find(customer.id);
 
     expect(customer).toStrictEqual(customerResult);
     
@@ -95,7 +95,7 @@ describe("Costumer repository test unit",()=>{
 
 
 it("should find all customers", async () => {
-  const CustomerRepository = new customerRepository();
+  const customerRepository = new CustomerRepository();
   const customer1 = new Customer("123", "Customer 1");
   const address1 = new Address("Street 1", 1, "Zipcode 1", "City 1");
   customer1.Address = address1;
@@ -107,10 +107,10 @@ it("should find all customers", async () => {
   customer2.Address = address2;
   customer2.add_rewardPoints(20);
 
-  await CustomerRepository.create(customer1);
-  await CustomerRepository.create(customer2);
+  await customerRepository.create(customer1);
+  await customerRepository.create(customer2);
 
-  const customers = await CustomerRepository.findAll();
+  const customers = await customerRepository.findAll();
 
   expect(customers).toHaveLength(2);
   expect(customers).toContainEqual(customer1);

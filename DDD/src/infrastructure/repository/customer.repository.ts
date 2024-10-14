@@ -2,15 +2,15 @@ import Address from "../../Domain/entity/address";
 import Customer from "../../Domain/entity/Costumer";
 import Costumer from "../../Domain/entity/Costumer";
 import CustomerRepositoryInterface from "../../Domain/repository/customer-repository-interface";
-import customerModel from "../db/sequelize/model/customer.model";
+import CustomerModel from "../db/sequelize/model/customer.model";
 
-export default class customerRepository implements CustomerRepositoryInterface{
+export default class CustomerRepository implements CustomerRepositoryInterface{
 
     
     async create(entity: Costumer): Promise<void> {
         
 
-        await customerModel.create({
+        await CustomerModel.create({
             id: entity.id,
             name: entity.name,
             active: entity.isActive(),
@@ -26,7 +26,7 @@ export default class customerRepository implements CustomerRepositoryInterface{
 
 
     async update(entity: Costumer): Promise<void> {
-        await customerModel.update(
+        await CustomerModel.update(
             {
               name: entity.name,
               street: entity.address.rua,
@@ -46,9 +46,9 @@ export default class customerRepository implements CustomerRepositoryInterface{
 
 
     async find(id: string): Promise<Costumer> {
-        let CustomerModel;
+        let customerModel;
     try {
-      CustomerModel = await customerModel.findOne({
+      customerModel = await CustomerModel.findOne({
         where: {
           id,
         },
@@ -58,12 +58,12 @@ export default class customerRepository implements CustomerRepositoryInterface{
       throw new Error("Customer not found");
     }
 
-    const customer = new Customer(id, CustomerModel.name);
+    const customer = new Customer(id, customerModel.name);
     const address = new Address(
-      CustomerModel.rua,
-      CustomerModel.numero,
-      CustomerModel.zip,
-      CustomerModel.cidade
+      customerModel.rua,
+      customerModel.numero,
+      customerModel.zip,
+      customerModel.cidade
     );
     customer.changeAddress(address);
     return customer;
@@ -74,7 +74,7 @@ export default class customerRepository implements CustomerRepositoryInterface{
 
 
   async findAll(): Promise<Costumer[]> {
-    const customerModels = await customerModel.findAll();
+    const customerModels = await CustomerModel.findAll();
 
     const customers = customerModels.map((customerModels)=>{
       let customer = new Costumer(customerModels.id, customerModels.name);
